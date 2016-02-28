@@ -223,8 +223,8 @@ function fish_prompt
   prompt_virtual_env
   prompt_user
   prompt_dir
-  available hg;  and prompt_hg
-  available git; and prompt_git
-  available svn; and prompt_svn
+  type -q hg;  and prompt_hg
+  type -q git; and prompt_git
+  type -q svn; and prompt_svn
   prompt_finish
 end
