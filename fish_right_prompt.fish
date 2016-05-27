@@ -52,7 +52,7 @@ function prompt_vi_mode -d 'vi mode status indicator'
 end
 
 function fish_right_prompt -d 'Prints right prompt'
-  if set -q __fish_vi_mode
+  if test "$fish_key_bindings" = "fish_vi_key_bindings"
     set -l first_color black
     set_color $first_color
     echo "$right_segment_separator"
