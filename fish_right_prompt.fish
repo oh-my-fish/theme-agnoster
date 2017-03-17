@@ -1,10 +1,6 @@
 # right prompt for agnoster theme
 # shows vim mode status
 
-# Redefine fish_mode_prompt function as empty to hide fish-shell mode indicator
-function fish_mode_prompt
-end
-
 function prompt_vi_mode -d 'vi mode status indicator'
   set -l right_segment_separator \uE0B2
   switch $fish_bind_mode
