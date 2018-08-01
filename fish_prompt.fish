@@ -132,7 +132,6 @@ function prompt_hg -d "Display mercurial state"
   set -l branch
   set -l state
   if command hg id >/dev/null 2>&1
-    if command hg prompt >/dev/null 2>&1
       set branch (command hg prompt "{branch}")
       set state (command hg prompt "{status}")
       set branch_symbol \uE0A0
@@ -143,7 +142,6 @@ function prompt_hg -d "Display mercurial state"
         else
           prompt_segment green black "$branch_symbol $branch"
       end
-    end
   end
 end
 
