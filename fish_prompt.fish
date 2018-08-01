@@ -134,21 +134,22 @@ function prompt_hg -d "Display mercurial state"
   if command hg id >/dev/null 2>&1
       set branch (command hg id -b)
       set state (hg_get_state)
+      set revision (command hg id -n)
       set branch_symbol \uE0A0
-      if [ "$state" = "0" ]
-        prompt_segment red white "$branch_symbol $branch ±"
-      else if [ "$state" = "1" ]
-          prompt_segment yellow black "$branch_symbol $branch ±"
-        else
-          prompt_segment green black "$branch_symbol $branch"
+      if [ "$state" = "1" ]
+        prompt_segment red white "$branch_symbol $branch:$revision ±"
+      else if [ "$state" = "0" ]
+          prompt_segment yellow black "$branch_symbol $branch:$revision ±"
+      else
+          prompt_segment green black "$branch_symbol $branch:$revision"
       end
   end
 end
 
 function hg_get_state -d "Get mercurial working directory state"
-  if hg status | grep --quiet -e "^[A|M|R]"
+  if hg status | grep --quiet -e "^[?]"
     echo 0
-  else if hg status | grep --quiet -e "^[?]"
+  else if hg status | grep --quiet -e "^[A|M|R|!]"
     echo 1
   else
     echo 2
