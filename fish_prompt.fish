@@ -18,6 +18,41 @@
 set -g current_bg NONE
 set segment_separator \uE0B0
 set right_segment_separator \uE0B0
+
+# ===========================
+# Color setting
+
+# You can set these variables in config.fish like:
+# set -g color_dir_bg red
+# If not set, default color from agnoster will be used.
+# ===========================
+
+set -q color_virtual_env_bg; or set color_virtual_env_bg white
+set -q color_virtual_env_str; or set color_virtual_env_str black
+set -q color_user_bg; or set color_user_bg black
+set -q color_user_str; or set color_user_str yellow
+set -q color_dir_bg; or set color_dir_bg blue
+set -q color_dir_str; or set color_dir_str black
+set -q color_hg_removed_bg; or set color_hg_removed_bg red
+set -q color_hg_removed_str; or set color_hg_removed_str white
+set -q color_hg_untracked_bg; or set color_hg_untracked_bg yellow
+set -q color_hg_untracked_str; or set color_hg_untracked_str black
+set -q color_hg_bg; or set color_hg_bg green
+set -q color_hg_str; or set color_hg_str black
+set -q color_git_dirty_bg; or set color_git_dirty_bg yellow
+set -q color_git_dirty_str; or set color_git_dirty_str black
+set -q color_git_bg; or set color_git_bg green
+set -q color_git_str; or set color_git_str black
+set -q color_svn_bg; or set color_svn_bg green
+set -q color_svn_str; or set color_svn_str black
+set -q color_status_nonzero_bg; or set color_status_nonzero_bg black
+set -q color_status_nonzero_str; or set color_status_nonzero_str red
+set -q color_status_superuser_bg; or set color_status_superuser_bg black
+set -q color_status_superuser_str; or set color_status_superuser_str yellow
+set -q color_status_jobs_bg; or set color_status_jobs_bg black
+set -q color_status_jobs_str; or set color_status_jobs_str cyan
+
+
 # ===========================
 # Helper methods
 # ===========================
@@ -92,7 +127,7 @@ end
 
 function prompt_virtual_env -d "Display Python virtual environment"
   if test "$VIRTUAL_ENV"
-    prompt_segment white black (basename $VIRTUAL_ENV)
+    prompt_segment $color_virtual_env_bg $color_virtual_env_str (basename $VIRTUAL_ENV)
   end
 end
 
@@ -106,12 +141,12 @@ function prompt_user -d "Display current user if different from $default_user"
       else
         set USER_PROMPT $USER
       end
-      prompt_segment black yellow $USER_PROMPT
+      prompt_segment $color_user_bg $color_user_str $USER_PROMPT
     end
   else
     get_hostname
     if [ $HOSTNAME_PROMPT ]
-      prompt_segment black yellow $HOSTNAME_PROMPT
+      prompt_segment $color_user_bg $color_user_str $HOSTNAME_PROMPT
     end
   end
 end
@@ -124,7 +159,7 @@ function get_hostname -d "Set current hostname to prompt variable $HOSTNAME_PROM
 end
 
 function prompt_dir -d "Display the current directory"
-  prompt_segment blue black (prompt_pwd)
+  prompt_segment $color_dir_bg $color_dir_str (prompt_pwd)
 end
 
 
@@ -137,9 +172,9 @@ function prompt_hg -d "Display mercurial state"
       set revision (command hg id -n)
       set branch_symbol \uE0A0
       if [ "$state" = "0" ]
-          prompt_segment yellow black "$branch_symbol $branch:$revision ±"
+          prompt_segment $color_hg_removed_bg $color_hg_removed_str "$branch_symbol $branch:$revision ±"
       else
-          prompt_segment green black "$branch_symbol $branch:$revision"
+          prompt_segment $color_hg_bg $color_hg_str "$branch_symbol $branch:$revision"
       end
   end
 end
@@ -166,9 +201,9 @@ function prompt_git -d "Display the current git state"
     set branch_symbol \uE0A0
     set -l branch (echo $ref | sed  "s-refs/heads/-$branch_symbol -")
     if [ "$dirty" != "" ]
-      prompt_segment yellow black "$branch $dirty"
+      prompt_segment $color_git_dirty_bg $color_git_dirty_str "$branch $dirty"
     else
-      prompt_segment green black "$branch $dirty"
+      prompt_segment $color_git_bg $color_git_str "$branch $dirty"
     end
   end
 end
@@ -180,7 +215,7 @@ function prompt_svn -d "Display the current svn state"
     set branch (svn_get_branch)
     set branch_symbol \uE0A0
     set revision (svn_get_revision)
-    prompt_segment green black "$branch_symbol $branch:$revision"
+    prompt_segment $color_svn_bg $color_svn_str "$branch_symbol $branch:$revision"
   end
 end
 
@@ -204,18 +239,18 @@ end
 
 function prompt_status -d "the symbols for a non zero exit status, root and background jobs"
     if [ $RETVAL -ne 0 ]
-      prompt_segment black red "✘"
+      prompt_segment $color_status_nonzero_bg $color_status_nonzero_str "✘"
     end
 
     # if superuser (uid == 0)
     set -l uid (id -u $USER)
     if [ $uid -eq 0 ]
-      prompt_segment black yellow "⚡"
+      prompt_segment $color_status_superuser_bg $color_status_superuser_str "⚡"
     end
 
     # Jobs display
     if [ (jobs -l | wc -l) -gt 0 ]
-      prompt_segment black cyan "⚙"
+      prompt_segment $color_status_jobs_bg $color_status_jobs_str "⚙"
     end
 end
 
