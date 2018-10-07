@@ -33,10 +33,8 @@ set -q color_user_bg; or set color_user_bg black
 set -q color_user_str; or set color_user_str yellow
 set -q color_dir_bg; or set color_dir_bg blue
 set -q color_dir_str; or set color_dir_str black
-set -q color_hg_removed_bg; or set color_hg_removed_bg red
-set -q color_hg_removed_str; or set color_hg_removed_str white
-set -q color_hg_untracked_bg; or set color_hg_untracked_bg yellow
-set -q color_hg_untracked_str; or set color_hg_untracked_str black
+set -q color_hg_changed_bg; or set color_hg_changed_bg yellow
+set -q color_hg_changed_str; or set color_hg_changed_str black
 set -q color_hg_bg; or set color_hg_bg green
 set -q color_hg_str; or set color_hg_str black
 set -q color_git_dirty_bg; or set color_git_dirty_bg yellow
@@ -167,18 +165,23 @@ function prompt_hg -d "Display mercurial state"
   set -l branch
   set -l state
   if command hg id >/dev/null 2>&1
-    if command hg prompt >/dev/null 2>&1
-      set branch (command hg prompt "{branch}")
-      set state (command hg prompt "{status}")
+      set branch (command hg id -b)
+      set state (hg_get_state)
+      set revision (command hg id -n)
       set branch_symbol \uE0A0
-      if [ "$state" = "!" ]
-        prompt_segment $color_hg_removed_bg $color_hg_removed_str "$branch_symbol $branch ±"
-      else if [ "$state" = "?" ]
-          prompt_segment $color_hg_untracked_bg $color_hg_untracked_str "$branch_symbol $branch ±"
-        else
-          prompt_segment $color_hg_bg $color_hg_str "$branch_symbol $branch"
+      if [ "$state" = "0" ]
+          prompt_segment $color_hg_changed_bg $color_hg_changed_str "$branch_symbol $branch:$revision ±"
+      else
+          prompt_segment $color_hg_bg $color_hg_str "$branch_symbol $branch:$revision"
       end
-    end
+  end
+end
+
+function hg_get_state -d "Get mercurial working directory state"
+  if hg status | grep --quiet -e "^[A|M|R|!|?]"
+    echo 0
+  else
+    echo 1
   end
 end
 
