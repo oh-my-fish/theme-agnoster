@@ -19,6 +19,10 @@ set -g current_bg NONE
 set segment_separator \uE0B0
 set right_segment_separator \uE0B0
 
+set -q hg_prompt_enabled; or set hg_prompt_enabled 1
+set -q git_prompt_enabled; or set git_prompt_enabled 1
+set -q svn_prompt_enabled; or set svn_prompt_enabled 1
+
 # ===========================
 # Color setting
 
@@ -263,8 +267,14 @@ function fish_prompt
   prompt_virtual_env
   prompt_user
   prompt_dir
-  type -q hg;  and prompt_hg
-  type -q git; and prompt_git
-  type -q svn; and prompt_svn
+  if [ $hg_prompt_enabled -ne 0 ]
+    type -q hg; and prompt_hg
+  end
+  if [ $git_prompt_enabled -ne 0 ]
+    type -q git; and prompt_git
+  end
+  if [ $svn_prompt_enabled -ne 0 ]
+    type -q svn; and prompt_svn
+  end
   prompt_finish
 end
