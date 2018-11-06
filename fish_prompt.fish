@@ -18,6 +18,7 @@
 set -g current_bg NONE
 set segment_separator \uE0B0
 set right_segment_separator \uE0B0
+set -q scm_prompt_blacklist; or set scm_prompt_blacklist
 
 # ===========================
 # Color setting
@@ -74,6 +75,11 @@ function parse_git_dirty
   end
 end
 
+function cwd_in_scm_blacklist
+  for entry in $scm_prompt_blacklist
+    pwd | grep "^$entry" -
+  end
+end
 
 # ===========================
 # Segments functions
@@ -263,8 +269,10 @@ function fish_prompt
   prompt_virtual_env
   prompt_user
   prompt_dir
-  type -q hg;  and prompt_hg
-  type -q git; and prompt_git
-  type -q svn; and prompt_svn
+  if [ (cwd_in_scm_blacklist | wc -c) -eq 0 ]
+    type -q hg;  and prompt_hg
+    type -q git; and prompt_git
+    type -q svn; and prompt_svn
+  end
   prompt_finish
 end
