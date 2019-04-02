@@ -26,7 +26,7 @@ For Mac users, I highly recommend iTerm 2 + Solarized Dark
 * Elevated (root) privileges (⚡)
 * Current virtualenv (Python)
 You will probably want to disable the default virtualenv prompt. Add to your [`init.fish`](https://github.com/oh-my-fish/oh-my-fish#dotfiles):
-`set --export VIRTUAL_ENV_DISABLE_PROMPT 1`
+`set -gx VIRTUAL_ENV_DISABLE_PROMPT 1`
 * Indicate vi mode.
 * Source control blacklist. To disable source control prompts in certain directories, you can add the following to your `init.fish` or `config.fish`: `set -g scm_prompt_blacklist "/path/to/blacklist"`.
 
