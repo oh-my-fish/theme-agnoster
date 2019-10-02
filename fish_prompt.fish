@@ -173,7 +173,7 @@ function prompt_hg -d "Display mercurial state"
       set branch (command hg id -b)
       # We use `hg bookmarks` as opposed to `hg id -B` because it marks
       # currently active bookmark with an asterisk. We use `sed` to isolate it.
-      set bookmark (hg bookmarks | sed -nr 's/^.*\*\ +\b(.*)\ +.*$/:\1/p')
+      set bookmark (hg bookmarks | sed -nr 's/^.*\*\ +\b(\w*)\ +.*$/:\1/p')
       set state (hg_get_state)
       set revision (command hg id -n)
       set branch_symbol \uE0A0
