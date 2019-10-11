@@ -51,6 +51,12 @@ set -q color_status_superuser_str; or set color_status_superuser_str yellow
 set -q color_status_jobs_bg; or set color_status_jobs_bg black
 set -q color_status_jobs_str; or set color_status_jobs_str cyan
 
+# ===========================
+# Git settings
+# set -g color_dir_bg red
+
+set -q fish_git_prompt_untracked_files; or set fish_git_prompt_untracked_files normal
+
 
 # ===========================
 # Helper methods
@@ -64,7 +70,8 @@ function parse_git_dirty
   if [ $__fish_git_prompt_showdirtystate = "yes" ]
     set -l submodule_syntax
     set submodule_syntax "--ignore-submodules=dirty"
-    set git_dirty (command git status --porcelain $submodule_syntax  2> /dev/null)
+    set untracked_syntax "--untracked-files=$fish_git_prompt_untracked_files"
+    set git_dirty (command git status --porcelain $submodule_syntax $untracked_syntax 2> /dev/null)
     if [ -n "$git_dirty" ]
         echo -n "$__fish_git_prompt_char_dirtystate"
     else

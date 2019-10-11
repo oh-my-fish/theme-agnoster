@@ -22,6 +22,7 @@ For Mac users, I highly recommend iTerm 2 + Solarized Dark
 * Branch () or detached head (➦)
 * Current branch / SHA1 in detached head state
 * Dirty working directory (±, color change)
+  * By default, git repos will show as dirty if there are untracked files. This can be changed by adding `set -g set -g fish_git_prompt_untracked_files no` to your `config.fish`. This value is passed into `git status --untracked-files`, so any value git supports is valid for this command
 * Working directory
 * Elevated (root) privileges (⚡)
 * Current virtualenv (Python)
