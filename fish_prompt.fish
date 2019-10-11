@@ -171,13 +171,17 @@ function prompt_hg -d "Display mercurial state"
   set -l state
   if command hg id >/dev/null 2>&1
       set branch (command hg id -b)
+      # We use `hg bookmarks` as opposed to `hg id -B` because it marks
+      # currently active bookmark with an asterisk. We use `sed` to isolate it.
+      set bookmark (hg bookmarks | sed -nr 's/^.*\*\ +\b(\w*)\ +.*$/:\1/p')
       set state (hg_get_state)
       set revision (command hg id -n)
       set branch_symbol \uE0A0
+      set prompt_text "$branch_symbol $branch$bookmark:$revision"
       if [ "$state" = "0" ]
-          prompt_segment $color_hg_changed_bg $color_hg_changed_str "$branch_symbol $branch:$revision ±"
+          prompt_segment $color_hg_changed_bg $color_hg_changed_str $prompt_text " ±"
       else
-          prompt_segment $color_hg_bg $color_hg_str "$branch_symbol $branch:$revision"
+          prompt_segment $color_hg_bg $color_hg_str $prompt_text
       end
   end
 end
