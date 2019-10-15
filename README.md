@@ -25,7 +25,7 @@ For Mac users, I highly recommend iTerm 2 + Solarized Dark
   * By default, git repos will show as dirty if there are untracked files. This can be changed by adding `set -g fish_git_prompt_untracked_files no` to your `config.fish`. This value is passed into `git status --untracked-files`, so any value git supports is valid for this command
 * Current working directory
 * Elevated (root) privileges (⚡)
-* Current virtualenv (Python)
+* Current virtual environment (Python virtualenv and Nix Shell)
 You will probably want to disable the default virtualenv prompt. Add to your [`init.fish`](https://github.com/oh-my-fish/oh-my-fish#dotfiles):
 `set -gx VIRTUAL_ENV_DISABLE_PROMPT 1`
 * Indicate vi mode.

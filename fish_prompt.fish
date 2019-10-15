@@ -135,9 +135,20 @@ end
 # Theme components
 # ===========================
 
-function prompt_virtual_env -d "Display Python virtual environment"
+function prompt_virtual_env -d "Display Python or Nix virtual environment"
+  set envs
+
   if test "$VIRTUAL_ENV"
-    prompt_segment $color_virtual_env_bg $color_virtual_env_str (basename $VIRTUAL_ENV)
+    set py_env (basename $VIRTUAL_ENV)
+    set envs $envs "py[$py_env]"
+  end
+
+  if test "$IN_NIX_SHELL"
+    set envs $envs "nix[$IN_NIX_SHELL]"
+  end
+
+  if test "$envs"
+    prompt_segment $color_virtual_env_bg $color_virtual_env_str (string join " " $envs)
   end
 end
 
