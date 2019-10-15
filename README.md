@@ -24,7 +24,7 @@ For Mac users, I highly recommend iTerm 2 + Solarized Dark
 * Dirty working directory (±, color change)
 * Working directory
 * Elevated (root) privileges (⚡)
-* Current virtualenv (Python)
+* Current virtual environment (Python virtualenv and Nix Shell)
 You will probably want to disable the default virtualenv prompt. Add to your [`init.fish`](https://github.com/oh-my-fish/oh-my-fish#dotfiles):
 `set -gx VIRTUAL_ENV_DISABLE_PROMPT 1`
 * Indicate vi mode.
