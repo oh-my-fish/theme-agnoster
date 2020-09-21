@@ -6,7 +6,7 @@ A fish theme optimized for people who use:
 * Git
 * Mercurial (requires 'hg prompt')
 * SVN
-* Unicode-compatible fonts and terminals (Use a Powerline patched font, e.g., from here: https://github.com/powerline/fonts) 
+* Unicode-compatible fonts and terminals (Use a Powerline patched font, e.g., from here: https://github.com/powerline/fonts)
 * Fish Vi-mode
 
 For Mac users, I highly recommend iTerm 2 + Solarized Dark
@@ -17,6 +17,7 @@ For Mac users, I highly recommend iTerm 2 + Solarized Dark
 #### Characteristics
 
 * If the previous command failed (✘)
+- If private mode is enabled (🔒)
 * User @ Hostname (if user is not DEFAULT_USER, which can be set in your profile)
 * Git/HG/SVN status
 * Branch () or detached head (➦)
