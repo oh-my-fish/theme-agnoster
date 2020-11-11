@@ -12,6 +12,7 @@
 # set -g theme_hide_hostname yes
 # set -g theme_hide_hostname no
 # set -g default_user your_normal_user
+# set -g theme_svn_prompt_enabled yes
 
 
 
@@ -59,6 +60,10 @@ set -q color_status_private_str; or set color_status_private_str purple
 
 set -q fish_git_prompt_untracked_files; or set fish_git_prompt_untracked_files normal
 
+# ===========================
+# Subversion settings
+
+set -q theme_svn_prompt_enabled; or set theme_svn_prompt_enabled no
 
 # ===========================
 # Helper methods
@@ -298,7 +303,9 @@ function fish_prompt
   if [ (cwd_in_scm_blacklist | wc -c) -eq 0 ]
     type -q hg;  and prompt_hg
     type -q git; and prompt_git
-    type -q svn; and prompt_svn
+    if [ "$theme_svn_prompt_enabled" = "yes" ]
+      type -q svn; and prompt_svn
+    end
   end
   prompt_finish
 end
