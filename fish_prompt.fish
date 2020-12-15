@@ -159,6 +159,12 @@ function prompt_virtual_env -d "Display Python or Nix virtual environment"
   end
 end
 
+function prompt_conda_env -d "Display conda environment"
+  if test "$CONDA_DEFAULT_ENV"
+    prompt_segment yellow black $CONDA_DEFAULT_ENV
+  end
+end
+
 function prompt_user -d "Display current user if different from $default_user"
   if [ "$theme_display_user" = "yes" ]
     if [ "$USER" != "$default_user" -o -n "$SSH_CLIENT" ]
@@ -298,6 +304,7 @@ function fish_prompt
   set -g RETVAL $status
   prompt_status
   prompt_virtual_env
+  prompt_conda_env
   prompt_user
   prompt_dir
   if [ (cwd_in_scm_blacklist | wc -c) -eq 0 ]
