@@ -21,6 +21,7 @@ set -g current_bg NONE
 set -g segment_separator \uE0B0
 set -g right_segment_separator \uE0B0
 set -q scm_prompt_blacklist; or set -g scm_prompt_blacklist
+set -q max_package_count_visible_in_prompt; or set -g max_package_count_visible_in_prompt 10
 
 # ===========================
 # Color setting
@@ -188,7 +189,27 @@ function prompt_virtual_env -d "Display Python or Nix virtual environment"
   end
 
   if test "$IN_NIX_SHELL"
+    # Support for
+    #   1) `nix-shell` command.
+    #   2) `nix develop` command in nix 2.4+.
+    # These commands are typically dumping too many packages into PATH for it be useful to print
+    # them. Thus we only print "nix[pure]" or "nix[impure]".
     set envs $envs "nix[$IN_NIX_SHELL]"
+  else
+    # Support for `nix shell` command in nix 2.4+. Only the packages passed on the command line are
+    # available in PATH, so it is useful to print them all.
+    set nix_packages
+    for p in $PATH
+      if test (string match --regex '/nix/store/[a-z0-9]+-(?<package_name>[^/]+)-[0-9.]+/.*' $p)[2]
+          set nix_packages $nix_packages $package_name
+      end
+    end
+    if test (count $nix_packages) -gt $max_package_count_visible_in_prompt
+      set nix_packages $nix_packages[1..$max_package_count_visible_in_prompt] "..."
+    end
+    if test "$nix_packages"
+      set envs $envs "nix[$nix_packages]"
+    end
   end
 
   if test "$envs"
