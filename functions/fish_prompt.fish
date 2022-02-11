@@ -22,6 +22,8 @@ set -g segment_separator \uE0B0
 set -g right_segment_separator \uE0B0
 set -q scm_prompt_blacklist; or set -g scm_prompt_blacklist
 set -q max_package_count_visible_in_prompt; or set -g max_package_count_visible_in_prompt 10
+# We support trimming the version only in simple cases, such as "1.2.3".
+set -q try_to_trim_nix_package_version; or set -g try_to_trim_nix_package_version yes
 
 # ===========================
 # Color setting
@@ -200,8 +202,14 @@ function prompt_virtual_env -d "Display Python or Nix virtual environment"
     # available in PATH, so it is useful to print them all.
     set nix_packages
     for p in $PATH
-      if test (string match --regex '/nix/store/[a-z0-9]+-(?<package_name>[^/]+)-[0-9.]+/.*' $p)[2]
+      set package_name_version (string match --regex '/nix/store/[a-z0-9]+-([^/]+)/.*' $p)[2]
+      if test "$package_name_version"
+        set package_name (string match --regex '^(.*)-[0-9]+(\.[0-9])+' $package_name_version)[2]
+        if test "$try_to_trim_nix_package_version" = "yes" -a -n "$package_name"
           set nix_packages $nix_packages $package_name
+        else
+          set nix_packages $nix_packages $package_name_version
+        end
       end
     end
     if test (count $nix_packages) -gt $max_package_count_visible_in_prompt
