@@ -74,7 +74,7 @@ function prompt_vi_mode -d 'vi mode status indicator'
 end
 
 function fish_right_prompt -d 'Prints right prompt'
-  if test "$fish_key_bindings" = "fish_vi_key_bindings"
+  if not test "$fish_key_bindings" = "fish_default_key_bindings"
     prompt_vi_mode
     set_color normal
   end
