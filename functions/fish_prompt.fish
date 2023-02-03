@@ -55,6 +55,11 @@ set -q color_status_private_bg; or set -g color_status_private_bg black
 set -q color_status_private_str; or set -g color_status_private_str purple
 
 # ===========================
+# General VCS settings
+
+set -q fish_vcs_branch_name_length; or set -g fish_vcs_branch_name_length 15
+
+# ===========================
 # Git settings
 # set -g color_dir_bg red
 
@@ -72,6 +77,24 @@ set -q theme_svn_prompt_enabled; or set -g theme_svn_prompt_enabled no
 set -g __fish_git_prompt_showdirtystate 'yes'
 set -g __fish_git_prompt_char_dirtystate '±'
 set -g __fish_git_prompt_char_cleanstate ''
+
+function shorten_branch_name -a branch_name
+  set new_branch_name $branch_name
+
+  if test (string length $branch_name) -gt $fish_vcs_branch_name_length
+    # Round up length before dot (+0.5)
+    # Remove half the length of dots (-1)
+    # -> Total offset: -0.5
+    set pre_dots_length (math -s0 $fish_vcs_branch_name_length / 2 - 0.5)
+    # Round down length after dot (-0.5)
+    # Remove half the length of dots (-1)
+    # -> Total offset: -1.5
+    set post_dots_length (math -s0 $fish_vcs_branch_name_length / 2 - 1.5)
+    set new_branch_name (string replace -r "(.{$pre_dots_length}).*(.{$post_dots_length})" '$1..$2' $branch_name)
+  end
+
+  echo $new_branch_name
+end
 
 function parse_git_dirty
   if [ $__fish_git_prompt_showdirtystate = "yes" ]
@@ -199,7 +222,8 @@ function prompt_hg -d "Display mercurial state"
   set -l branch
   set -l state
   if command hg id >/dev/null 2>&1
-      set branch (command hg id -b)
+      set long_branch (command hg id -b)
+      set -l branch (shorten_branch_name $long_branch)
       # We use `hg bookmarks` as opposed to `hg id -B` because it marks
       # currently active bookmark with an asterisk. We use `sed` to isolate it.
       set bookmark (hg bookmarks | sed -nr 's/^.*\*\ +\b(\w*)\ +.*$/:\1/p')
@@ -235,11 +259,12 @@ function prompt_git -d "Display the current git state"
       set ref "➦ $branch "
     end
     set branch_symbol \uE0A0
-    set -l branch (echo $ref | sed  "s-refs/heads/-$branch_symbol -")
+    set -l long_branch (echo $ref | sed "s#refs/heads/##")
+    set -l branch (shorten_branch_name $long_branch)
     if [ "$dirty" != "" ]
-      prompt_segment $color_git_dirty_bg $color_git_dirty_str "$branch $dirty"
+      prompt_segment $color_git_dirty_bg $color_git_dirty_str "$branch_symbol $branch $dirty"
     else
-      prompt_segment $color_git_bg $color_git_str "$branch $dirty"
+      prompt_segment $color_git_bg $color_git_str "$branch_symbol $branch $dirty"
     end
   end
 end
@@ -248,7 +273,8 @@ end
 function prompt_svn -d "Display the current svn state"
   set -l ref
   if command svn info >/dev/null 2>&1
-    set branch (svn_get_branch)
+    set long_branch (svn_get_branch)
+    set -l branch (shorten_branch_name $long_branch)
     set branch_symbol \uE0A0
     set revision (svn_get_revision)
     prompt_segment $color_svn_bg $color_svn_str "$branch_symbol $branch:$revision"
