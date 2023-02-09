@@ -145,6 +145,10 @@ end
 function prompt_virtual_env -d "Display Python or Nix virtual environment"
   set envs
 
+  if test "$CONDA_DEFAULT_ENV"
+    set envs $envs "conda[$CONDA_DEFAULT_ENV]"
+  end
+
   if test "$VIRTUAL_ENV"
     set py_env (basename $VIRTUAL_ENV)
     set envs $envs "py[$py_env]"
