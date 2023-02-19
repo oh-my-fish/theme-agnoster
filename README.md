@@ -23,6 +23,7 @@ For Mac users, I highly recommend iTerm 2 + Solarized Dark
 * Subversion status enabled by adding `set -g theme_svn_prompt_enabled yes` to your `config.fish`.
 * Branch () or detached head (➦)
 * Current branch / SHA1 in detached head state
+  * Current branch name is shortened to 15 characters by default. Change it to `N` characters with `set -g fish_vcs_branch_name_length N` in your `config.fish`.
 * Dirty working directory (±, color change)
   * By default, git repos will show as dirty if there are untracked files. This can be changed by adding `set -g fish_git_prompt_untracked_files no` to your `config.fish`. This value is passed into `git status --untracked-files`, so any value git supports is valid for this command
 * Current working directory
