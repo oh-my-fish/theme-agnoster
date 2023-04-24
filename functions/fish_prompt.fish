@@ -13,6 +13,7 @@
 # set -g theme_hide_hostname no
 # set -g default_user your_normal_user
 # set -g theme_svn_prompt_enabled yes
+# set -g theme_mercurial_prompt_enabled yes
 
 
 
@@ -69,6 +70,11 @@ set -q fish_git_prompt_untracked_files; or set -g fish_git_prompt_untracked_file
 # Subversion settings
 
 set -q theme_svn_prompt_enabled; or set -g theme_svn_prompt_enabled no
+
+# ===========================
+# Mercurial settings
+
+set -q theme_mercurial_prompt_enabled; or set -g theme_mercurial_prompt_enabled no
 
 # ===========================
 # Helper methods
@@ -331,8 +337,10 @@ function fish_prompt
   prompt_dir
   prompt_virtual_env
   if [ (cwd_in_scm_blacklist | wc -c) -eq 0 ]
-    type -q hg;  and prompt_hg
     type -q git; and prompt_git
+    if [ "$theme_mercurial_prompt_enabled" = "yes" ]
+        type -q hg;  and prompt_hg
+    end
     if [ "$theme_svn_prompt_enabled" = "yes" ]
       type -q svn; and prompt_svn
     end
