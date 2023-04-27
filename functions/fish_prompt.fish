@@ -335,7 +335,7 @@ function fish_prompt
   if [ (cwd_in_scm_blacklist | wc -c) -eq 0 ]
     type -q git; and prompt_git
     if [ "$theme_mercurial_prompt_enabled" = "yes" ]
-        prompt_hg
+      prompt_hg
     end
     if [ "$theme_svn_prompt_enabled" = "yes" ]
       prompt_svn
