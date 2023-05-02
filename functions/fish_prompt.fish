@@ -13,6 +13,7 @@
 # set -g theme_hide_hostname no
 # set -g default_user your_normal_user
 # set -g theme_svn_prompt_enabled yes
+# set -g theme_mercurial_prompt_enabled yes
 
 
 
@@ -69,6 +70,11 @@ set -q fish_git_prompt_untracked_files; or set -g fish_git_prompt_untracked_file
 # Subversion settings
 
 set -q theme_svn_prompt_enabled; or set -g theme_svn_prompt_enabled no
+
+# ===========================
+# Mercurial settings
+
+set -q theme_mercurial_prompt_enabled; or set -g theme_mercurial_prompt_enabled no
 
 # ===========================
 # Helper methods
@@ -219,23 +225,19 @@ end
 
 
 function prompt_hg -d "Display mercurial state"
-  set -l branch
+  not set -l root (fish_print_hg_root); and return
+
   set -l state
-  if command hg id >/dev/null 2>&1
-      set long_branch (command hg id -b)
-      set -l branch (shorten_branch_name $long_branch)
-      # We use `hg bookmarks` as opposed to `hg id -B` because it marks
-      # currently active bookmark with an asterisk. We use `sed` to isolate it.
-      set bookmark (hg bookmarks | sed -nr 's/^.*\*\ +\b(\w*)\ +.*$/:\1/p')
-      set state (hg_get_state)
-      set revision (command hg id -n)
-      set branch_symbol \uE0A0
-      set prompt_text "$branch_symbol $branch$bookmark:$revision"
-      if [ "$state" = "0" ]
-          prompt_segment $color_hg_changed_bg $color_hg_changed_str $prompt_text " ±"
-      else
-          prompt_segment $color_hg_bg $color_hg_str $prompt_text
-      end
+  set -l branch (cat $root/branch 2>/dev/null; or echo default)
+  set -l bookmark (cat $root/bookmarks.current 2>/dev/null)
+  set state (hg_get_state)
+  set revision (command hg id -n)
+  set branch_symbol \uE0A0
+  set prompt_text "$branch_symbol $branch$bookmark:$revision"
+  if [ "$state" = "0" ]
+      prompt_segment $color_hg_changed_bg $color_hg_changed_str $prompt_text " ±"
+  else
+      prompt_segment $color_hg_bg $color_hg_str $prompt_text
   end
 end
 
@@ -331,10 +333,12 @@ function fish_prompt
   prompt_dir
   prompt_virtual_env
   if [ (cwd_in_scm_blacklist | wc -c) -eq 0 ]
-    type -q hg;  and prompt_hg
     type -q git; and prompt_git
+    if [ "$theme_mercurial_prompt_enabled" = "yes" ]
+      prompt_hg
+    end
     if [ "$theme_svn_prompt_enabled" = "yes" ]
-      type -q svn; and prompt_svn
+      prompt_svn
     end
   end
   prompt_finish

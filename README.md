@@ -19,8 +19,9 @@ For Mac users, I highly recommend iTerm 2 + Solarized Dark
 * If the previous command failed (✘)
 - If private mode is enabled (🔒)
 * User @ Hostname (if user is not DEFAULT_USER, which can be set in your profile)
-* Git/HG status
+* Git status
 * Subversion status enabled by adding `set -g theme_svn_prompt_enabled yes` to your `config.fish`.
+* Mercurial status enabled by adding `set -g theme_mercurial_prompt_enabled yes` to your `config.fish`.
 * Branch () or detached head (➦)
 * Current branch / SHA1 in detached head state
   * Current branch name is shortened to 15 characters by default. Change it to `N` characters with `set -g fish_vcs_branch_name_length N` in your `config.fish`.
