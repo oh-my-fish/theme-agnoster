@@ -194,13 +194,16 @@ function prompt_virtual_env -d "Display Python or Nix virtual environment"
   # available in PATH, so it is useful to print them all.
   set nix_packages
   for p in $PATH
-    set package_name_version (string match --regex '/nix/store/[a-z0-9]+-([^/]+)/.*' $p)[2]
+    set package_name_version (string match --regex '/nix/store/\w+-([^/]+)/.*' $p)[2]
     if test "$package_name_version"
-      set package_name (string match --regex '^(.*)-[0-9]+(\.[0-9])+' $package_name_version)[2]
+      set package_name (string match --regex '^(.*)-(\d+(\.\d)+|unstable-20\d{2}-\d{2}-\d{2})' $package_name_version)[2]
       if test "$try_to_trim_nix_package_version" = "yes" -a -n "$package_name"
-        set nix_packages $nix_packages $package_name
+        set package $package_name
       else
-        set nix_packages $nix_packages $package_name_version
+        set package $package_name_version
+      end
+      if not contains $package $nix_packages
+        set nix_packages $nix_packages $package
       end
     end
   end
