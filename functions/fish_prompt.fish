@@ -207,14 +207,24 @@ function prompt_virtual_env -d "Display Python or Nix virtual environment"
   if test (count $nix_packages) -gt $max_package_count_visible_in_prompt
     set nix_packages $nix_packages[1..$max_package_count_visible_in_prompt] "..."
   end
-  if test "$nix_packages"
-    set envs $envs "nix[$nix_packages]"
-  else if test "$IN_NIX_SHELL"
+
+  if [ "$IN_NIX_SHELL" = "impure" ]
     # Support for
-    #   1) `nix-shell` command.
+    #   1) `nix-shell` command 
     #   2) `nix develop` command in nix 2.4+.
     # These commands are typically dumping too many packages into PATH for it be useful to print
-    # them. Thus we only print "nix[pure]" or "nix[impure]".
+    # them. Thus we only print "nix[impure]".
+    set envs $envs "nix[impure]"
+  else if test "$nix_packages"
+    # Support for `nix-shell -p`. Would print "nix[foo bar baz]".
+    # We check for this case after checking for "impure" because impure brings too many packages 
+    # into PATH.
+    set envs $envs "nix[$nix_packages]"
+  else if test "$IN_NIX_SHELL"
+    # Support for `nix-shell --pure`. Would print "nix[pure]".
+    # We check for this case after checking for individual packages because it otherwise might 
+    # confuse the user into believing when they are in a pure shell, after they have invoked 
+    # `nix shell` from within it.
     set envs $envs "nix[$IN_NIX_SHELL]"
   end
 
