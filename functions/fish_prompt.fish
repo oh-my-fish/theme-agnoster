@@ -190,34 +190,32 @@ function prompt_virtual_env -d "Display Python or Nix virtual environment"
     set envs $envs "py[$py_env]"
   end
 
-  if test "$IN_NIX_SHELL"
+  # Support for `nix shell` command in nix 2.4+. Only the packages passed on the command line are
+  # available in PATH, so it is useful to print them all.
+  set nix_packages
+  for p in $PATH
+    set package_name_version (string match --regex '/nix/store/[a-z0-9]+-([^/]+)/.*' $p)[2]
+    if test "$package_name_version"
+      set package_name (string match --regex '^(.*)-[0-9]+(\.[0-9])+' $package_name_version)[2]
+      if test "$try_to_trim_nix_package_version" = "yes" -a -n "$package_name"
+        set nix_packages $nix_packages $package_name
+      else
+        set nix_packages $nix_packages $package_name_version
+      end
+    end
+  end
+  if test (count $nix_packages) -gt $max_package_count_visible_in_prompt
+    set nix_packages $nix_packages[1..$max_package_count_visible_in_prompt] "..."
+  end
+  if test "$nix_packages"
+    set envs $envs "nix[$nix_packages]"
+  else if test "$IN_NIX_SHELL"
     # Support for
     #   1) `nix-shell` command.
     #   2) `nix develop` command in nix 2.4+.
     # These commands are typically dumping too many packages into PATH for it be useful to print
     # them. Thus we only print "nix[pure]" or "nix[impure]".
     set envs $envs "nix[$IN_NIX_SHELL]"
-  else
-    # Support for `nix shell` command in nix 2.4+. Only the packages passed on the command line are
-    # available in PATH, so it is useful to print them all.
-    set nix_packages
-    for p in $PATH
-      set package_name_version (string match --regex '/nix/store/[a-z0-9]+-([^/]+)/.*' $p)[2]
-      if test "$package_name_version"
-        set package_name (string match --regex '^(.*)-[0-9]+(\.[0-9])+' $package_name_version)[2]
-        if test "$try_to_trim_nix_package_version" = "yes" -a -n "$package_name"
-          set nix_packages $nix_packages $package_name
-        else
-          set nix_packages $nix_packages $package_name_version
-        end
-      end
-    end
-    if test (count $nix_packages) -gt $max_package_count_visible_in_prompt
-      set nix_packages $nix_packages[1..$max_package_count_visible_in_prompt] "..."
-    end
-    if test "$nix_packages"
-      set envs $envs "nix[$nix_packages]"
-    end
   end
 
   if test "$envs"
