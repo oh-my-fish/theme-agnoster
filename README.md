@@ -34,5 +34,6 @@ You will probably want to disable the default virtualenv prompt. Add to your [`i
 `set -gx VIRTUAL_ENV_DISABLE_PROMPT 1`
 * Indicate vi mode.
 * Source control blacklist. To disable source control prompts in certain directories, you can add the following to your `init.fish` or `config.fish`: `set -g scm_prompt_blacklist "/path/to/blacklist"`.
+* The icons can be configured by setting variables. E.g. to replace the icon of failed command from the default "✘" use `set -g glyph_status_nonzero "💀"`. For  configuration options see [`fish_prompt.fish`](https://github.com/oh-my-fish/theme-agnoster/blob/master/functions/fish_prompt.fish).
 
 Ported from https://gist.github.com/agnoster/3712874.

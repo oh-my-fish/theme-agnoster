@@ -48,12 +48,16 @@ set -q color_svn_bg; or set -g color_svn_bg green
 set -q color_svn_str; or set -g color_svn_str black
 set -q color_status_nonzero_bg; or set -g color_status_nonzero_bg black
 set -q color_status_nonzero_str; or set -g color_status_nonzero_str red
+set -q glyph_status_nonzero; or set -g glyph_status_nonzero "✘"
 set -q color_status_superuser_bg; or set -g color_status_superuser_bg black
 set -q color_status_superuser_str; or set -g color_status_superuser_str yellow
+set -q glyph_status_superuser; or set -g glyph_status_superuser "🔒"
 set -q color_status_jobs_bg; or set -g color_status_jobs_bg black
 set -q color_status_jobs_str; or set -g color_status_jobs_str cyan
+set -q glyph_status_jobs; or set -g glyph_status_jobs "⚡"
 set -q color_status_private_bg; or set -g color_status_private_bg black
 set -q color_status_private_str; or set -g color_status_private_str purple
+set -q glyph_status_private; or set -g glyph_status_private "⚙"
 
 # ===========================
 # General VCS settings
@@ -303,22 +307,22 @@ end
 
 function prompt_status -d "the symbols for a non zero exit status, root and background jobs"
     if [ $RETVAL -ne 0 ]
-      prompt_segment $color_status_nonzero_bg $color_status_nonzero_str "✘"
+      prompt_segment $color_status_nonzero_bg $color_status_nonzero_str $glyph_status_nonzero
     end
 
     if [ "$fish_private_mode" ]
-      prompt_segment $color_status_private_bg $color_status_private_str "🔒"
+      prompt_segment $color_status_private_bg $color_status_private_str $glyph_status_private
     end
 
     # if superuser (uid == 0)
     set -l uid (id -u $USER)
     if [ $uid -eq 0 ]
-      prompt_segment $color_status_superuser_bg $color_status_superuser_str "⚡"
+      prompt_segment $color_status_superuser_bg $color_status_superuser_str $glyph_status_superuser
     end
 
     # Jobs display
     if [ (jobs -l | wc -l) -gt 0 ]
-      prompt_segment $color_status_jobs_bg $color_status_jobs_str "⚙"
+      prompt_segment $color_status_jobs_bg $color_status_jobs_str $glyph_status_jobs
     end
 end
 
