@@ -14,6 +14,8 @@
 # set -g default_user your_normal_user
 # set -g theme_svn_prompt_enabled yes
 # set -g theme_mercurial_prompt_enabled yes
+# set -g theme_virtual_env_prompt_enabled yes
+# set -g theme_virtual_env_prompt_enabled no
 
 
 
@@ -82,6 +84,11 @@ set -q theme_svn_prompt_enabled; or set -g theme_svn_prompt_enabled no
 # Mercurial settings
 
 set -q theme_mercurial_prompt_enabled; or set -g theme_mercurial_prompt_enabled no
+
+# ===========================
+# Virtual environmnet settings
+
+set -q theme_virtual_env_prompt_enabled; or set -g theme_virtual_env_prompt_enabled yes
 
 # ===========================
 # Helper methods
@@ -375,7 +382,9 @@ function fish_prompt
   prompt_status
   prompt_user
   prompt_dir
-  prompt_virtual_env
+  if [ "$theme_virtual_env_prompt_enabled" = "yes" ]
+    prompt_virtual_env
+  end
   if [ (cwd_in_scm_blacklist | wc -c) -eq 0 ]
     type -q git; and prompt_git
     if [ "$theme_mercurial_prompt_enabled" = "yes" ]
