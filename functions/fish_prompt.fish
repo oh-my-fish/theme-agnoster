@@ -14,6 +14,7 @@
 # set -g default_user your_normal_user
 # set -g theme_svn_prompt_enabled yes
 # set -g theme_mercurial_prompt_enabled yes
+# set -g theme_nix_packages_hide kitty ncurses
 
 
 
@@ -203,7 +204,9 @@ function prompt_virtual_env -d "Display Python or Nix virtual environment"
         set package $package_name_version
       end
       if not contains $package $nix_packages
-        set nix_packages $nix_packages $package
+        if not contains $package $theme_nix_packages_hide
+          set nix_packages $nix_packages $package
+        end
       end
     end
   end
